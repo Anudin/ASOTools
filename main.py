@@ -1,4 +1,5 @@
 import sys
+import argparse
 import re
 from play_scraper import search as store_search
 from unidecode import unidecode
@@ -54,12 +55,15 @@ def fuzzy_count(wordlist, threshold=70, scorer=fuzz.token_set_ratio):
 # TODO Fix fuzzy counting
 # TODO More involved logik considering e.g. synonyms
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Please pass exactly one search string.")
-        sys.exit(1)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("search_term")
+    parser.add_argument("--only-top", type=int)
+    args = parser.parse_args()
 
-    entries = store_search("sudoku")
+    entries = store_search(args.search_term)
     descriptions = [unidecode(entry["description"]) for entry in entries]
+    if args.only_top:
+        descriptions = descriptions[0:args.only_top]
     descriptions = preprocess_descriptions(descriptions)
     wordlist = string_list_to_word_list(descriptions)
     print("\n".join(wordlist))
