@@ -10,12 +10,12 @@ from fuzzywuzzy.process import fuzz, extract
 
 
 def preprocess_descriptions(descriptions):
-    descriptions = [
-        re.sub(r"[^\w']+", " ", description).strip() for description in descriptions
-    ]
-    descriptions = [description.lower() for description in descriptions]
-    descriptions = [remove_stopwords(description) for description in descriptions]
-    return descriptions
+    def preprocess(description):
+        description = re.sub(r"[^\w']+", " ", description).strip()
+        description = description.lower()
+        return remove_stopwords(description)
+
+    return list(map(preprocess, descriptions))
 
 
 def string_list_to_word_list(descriptions):
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     entries = store_search(args.search_term)
     descriptions = [unidecode(entry["description"]) for entry in entries]
     if args.only_top:
-        descriptions = descriptions[0:args.only_top]
+        descriptions = descriptions[0 : args.only_top]
     descriptions = preprocess_descriptions(descriptions)
     wordlist = string_list_to_word_list(descriptions)
     print("\n".join(wordlist))
