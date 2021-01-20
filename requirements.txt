@@ -1,0 +1,5 @@
+wheel==0.36.2
+play-scraper==0.6.0
+unidecode==1.1.2
+gensim==3.8.3
+fuzzywuzzy==0.18.0
